@@ -1,0 +1,226 @@
+---
+title: Restaking and Expanding Ethereums Ecosystem with EigenLayer
+description: Deep-dive into the latest trend of restaking and creating a decentralized trust marketplace
+date: "2023-05-09"
+---
+
+<Image src="/eigen-layer-banner.png" width="718" height="404" alt="Banner"/>
+
+*Originally published on [Mirror](https://mirror.xyz/edatweets.eth/2uAREDZh1bPqCVr5C5hA_1IkxghEI5htf0U8xuVTakY)*
+
+## TL;DR;
+
+- EigenLayer is a **restaking protocol** that enables ETH stakers to validate different networks/services built on Ethereum through a set of smart contracts.
+- EigenLayer aims to create a **decentralized trust marketplace** by taking Ethereum’s trust (capital + validator set) and offering components of it to anyone interested. This allows developers to focus on infrastructure-level innovation without the burden of bootstrapping a new network.
+- Stakers can earn rewards by helping operate and secure various networks and services built on Ethereum, such as data availability layers, decentralized sequencers, and bridges.
+- EigenLayer faces risks like operator collusion, over-commitment, and bootstrapping challenges, which require careful service/network design and monitoring.
+
+EigenLayer is without a doubt one of the projects that has gained the most attention in recent months. There are almost weekly podcasts, presentations, and updates. Before diving into the details, I knew only a few buzzwords and didn't understand how it actually worked. This post is essentially my study notes and me brainstorming out loud.
+
+Simply put, [EigenLayer](https://www.eigenlayer.xyz/) is a new solution to address the **challenges associated with innovation at the infrastructure level** in the blockchain ecosystem. It's a **restaking protocol** that enables ETH stakers to validate different networks and services built on Ethereum through a set of smart contracts on Ethereum. By restaking ETH on EigenLayer, stakers can support new Ethereum projects by providing services to operate them and gain access to additional staking opportunities.
+
+In this blog post, I want to talk about EigenLayer in more detail - including: what it is, how it works, why you should pay attention, the use cases, and the risks involved.
+
+Let's get to it.
+
+## But first - Why should I care?
+1. **Developers don't need to bootstrap a new ecosystem:** Developers get access Ethereum's staked capital and validator set, so they can now spend less time on security bootstrapping. This means faster development cycles and new use cases.
+2. **More opportunities for ETH stakers:** If you are an ETH staker seeking additional options, then EigenLayer might be an appealing choice. This protocol works alongside your existing Ethereum validation, allowing you to utilize your staked capital more efficiently and obtain extra advantages without much-added cost.
+3. **Increased security:** By extending the crypto-economic security of Ethereum to additional applications EigenLayer contributes to an overall more secure and robust decentralized ecosystem.
+
+## What is EigenLayer?
+
+As the [whitepaper](https://2039955362-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FPy2Kmkwju3mPSo9jrKKt%2Fuploads%2F2dCfPgItRfQbX25KriQv%2Fwhitepaper.pdf?alt=media&token=d4d94480-3f01-4e63-bc92-a0658ea37aab) reads:
+
+> EigenLayer is a set of smart contracts on Ethereum that allows consensus layer Ether (ETH) stakers to opt in to validating new software modules built on top of the Ethereum ecosystem.
+
+It’s a **“restaking”** protocol that allows ETH stakers to secure different networks and services, such as data availability layers, sequencers, bridges or other services built on top of Ethereum.
+
+## A Trip Down Memory Lane: Understanding the Blockchain Landscape
+
+First, let's go back a bit; **Bitcoin** emerged as an **application-specific blockchain** with a limited scope, focusing only on peer-to-peer payments. It was specifically designed for a single purpose. Every innovation during that time in 2011-2012 required the creation of a new network.
+
+**Ethereum** then introduced a **general-purpose smart contract platform**, allowing developers to build various applications, and making the blockchain ecosystem more programmable.x
+
+However, Ethereum has its limitations when it comes to innovating beyond the application layer. Although Ethereum enables programmability at the application layer, it doesn't extend that flexibility to other underlying infrastructure components (e.g., consensus layer, data availability layers, new virtual machines, oracle networks); in other words, for services that cannot be proved on top of the EVM. Such infrastructure-level components require actively validated services (AVS) with their own validation.
+
+This means that any innovation going beyond the application layer must either build its own service/network (e.g., Chainlink, Solana, etc.) or undergo a lengthy protocol development process (if accepted by the Ethereum community and will be implemented in the protocol).
+
+## Addressing Infrastructure Challenges with EigenLayer
+
+EigenLayer is a new approach to tackling the challenges associated with infrastructure-level innovation. The idea behind EigenLayer involves **leveraging a decentralized trust network to build the infrastructure components** necessary for advanced projects.
+
+Very briefly - here's how it works? EigenLayer introduces a method called restaking, which enables networks and services to be protected by staked ETH rather than their own tokens. Ethereum validators can opt in to offer new services that provide them with additional benefits. To do this, they must download and operate any necessary software. These services may impose conditions that lead to the loss of a validator's staked ETH if they behave dishonestly. This ensures that the validators act honestly, as their stake is on the line.
+
+The core question EigenLayer tries to answer is: *can we borrow trust from these decentralized networks & supply it to anyone who wants to consume it?*
+
+### What’s this “decentralized trust“?
+
+*Decentralized trust* gets lost in translation, so I want to focus on it for a second. (Tbh, I'm not in love with naming, but that's how I feel for most terms in the blockchain space.)
+
+Decentralized trust is a fundamental concept for blockchains. It refers to the ability of a system to establish trust among participants without relying on a central authority or third-party intermediary.
+
+There are different trust models, each with its own trade-offs. Let's look at what decentralized trust means for Ethereum.
+
+Ethereum is a decentralized blockchain network that uses a consensus algorithm called [Proof of Stake (PoS)](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/) to achieve trust and security without relying on a central authority. Multiple independent nodes validate and verify transactions, making manipulating or controlling the network challenging for any single participant, thus providing censorship resistance.
+
+In Ethereum's PoS, validators lock up a portion of their cryptocurrency (ETH) as collateral to propose and validate new blocks in the blockchain. A validator must deposit 32 ETH to run a dedicated staking node. They risk losing some of their staked ETH if they don't follow the rules. This mechanism encourages participants to act responsibly.
+
+Today, Ethereum has over 550k validators, as the data from [hildobby’s Dune Dashboard](https://dune.com/hildobby/eth2-staking).
+
+App developers can build secure and reliable applications by leveraging Ethereum's decentralized trust network. They can ensure that their smart contracts function as intended without needing a central authority or third-party intermediary to establish trust.
+
+### Decentralized Trust Marketplace
+
+Putting things together:
+
+- In decentralized networks, participants can trust the system to operate securely, accurately, and reliably, without a central governing entity.
+- EigenLayer aims to create a decentralized trust marketplace: by taking Ethereum’s trust (capital + validator set) and offering components of it to anyone interested.
+
+## How does it work?
+
+EigenLayer creates a marketplace connecting ETH stakers, who pledge their services for additional offerings, and services/networks that need operators on the other end. It's a [set of smart contracts](https://github.com/Layr-Labs/eigenlayer-contracts) on Ethereum that facilitate this.
+
+The two primary actors involved in EigenLayer are:
+
+1. Actively Validated Services (AVS): service/network requiring external operators to operate their networks - these are the services requiring decentralized trust. (Also referred to as [Services/Middleware](https://github.com/Layr-Labs/eigenlayer-contracts/blob/master/docs/EigenLayer-tech-spec.md#services--middleware)). An AVS can be a Data Availability layer, Decentralized Sequencer, Bridge, Oracle etc.
+2. [Stakers](https://github.com/Layr-Labs/eigenlayer-contracts/blob/master/docs/EigenLayer-tech-spec.md#stakers): actors who choose to provide specific services and, in return, can earn additional revenue. Stakers can run the software built on top of EigenLayer or delegate their stake to an [operator](https://github.com/Layr-Labs/eigenlayer-contracts/blob/master/docs/EigenLayer-tech-spec.md#operators).
+
+### Actively Validated Services
+First, to create an [AVS on EigenLayer](https://github.com/Layr-Labs/eigenlayer-contracts/blob/master/docs/AVS-Guide.md), you need:
+
+1. Off-chain container that operators must download and run (e.g., a service may require a validator to run a particular software)
+
+2. On-chain contract that specifies the terms for payments and penalties (slashing)
+
+### Restaking in EigenLayer
+A staker can opt in to new modules built on EigenLayer to provide security and validation services. This is called restaking.
+
+To participate in restaking, stakers must do one of the following:
+
+- download and execute the node software required for these modules
+- [delegate their stake to an operator](https://docs.eigenlayer.xyz/overview/readme/protocol-features#operator-delegation) that does this
+
+Upon opting in, these modules enforce penalty conditions on the ETH that has been staked to encourage honest behaviour.
+
+## Restaking: Different (Re)Staking Options
+Now you may ask:*Is this the same ETH that one needs to stake to become a validator? What if I don't have the 32 ETH required to become a validator?*
+
+
+EigenLayer offers different restaking options. Each has its own risks and rewards.
+
+- [Native Restaking](https://docs.eigenlayer.xyz/guides/native-restaking): This option is suitable for solo-stakers/home-stakers who want to restake their same staked ETH natively. When they stake within the Ethereum protocol, they need to specify a withdrawal credential, which is the account with the power to withdraw the staking collateral. To participate in EigenLayer, you need to assign this credential to the EigenLayer smart contracts. (L1 → EigenLayer)
+- [Liquid Restaking](https://docs.eigenlayer.xyz/guides/liquid-restaking): Liquid staking is a service that allows users to deposit their ETH into a staking pool and receive a liquid staking token in return (such as those offered by [Lido](https://lido.fi/ and [RocketPool](https://rocketpool.net/)). Stakers can deposit liquid staking tokens into EigenLayer. Different options exist here, such as ETH LP restaking.
+
+Service developers have the flexibility to set specific conditions for their stakers. For example, they can decide which tokens to accept as stakes and establish rules for distributing rewards. A module that prioritizes decentralization may only accept natively restaked ETH.
+
+Now, a critical question: *How does EigenLayer ensure stakers remain honest?*
+
+### Dishonest Actors: Slashing
+
+To ensure the honesty of stakers, service creators implement slashing mechanisms, which are penalty conditions for those who violate the rules. Stakers agree to the terms & conditions when they choose to provide a specific service, and they risk losing a portion of their staked ETH if they act dishonestly.
+
+If you are delegating to the operator, you are also trusting the operator to act honestly and could face similar penalties.
+
+### Honest nodes getting slashed: Unintended Slashing
+
+First - audit, audit, audit. Services must undergo security audits to avoid bugs and attacks.
+
+It happened - there's a bug or malicious code 😳. Let's say a bug or malicious code resulted in an unintended slashing penalty. EigenLayer relies on a governance committee to address such issues. The committee can reverse the slashing that resulted from bugs or malicious code.
+
+While some argue against human involvement, it is important to emphasize that the committee's role is solely to veto unintended slashing decisions. They do not make subjective judgments but rather act as a safety net for stakers.
+
+Also, the committee operates transparently, with their actions and member identities openly accessible to ensure trust. Both services and stakers can opt in, fully informed of the committee's role and structure.
+
+## Risks & Challenges
+
+Some questions that come to mind:
+
+- What happens if only a small group of restakers participate in multiple AVS and come together for an attack? Could restaking lead to overleverage?
+- How and when do the slashing and pay-outs happen? What if the slashing is too late?
+- Who can run the off-chain software specs? Can everyone participate and become an operator, or will there be high requirements?
+- Will people use EigenLayer?
+
+### Operator collusion: Small set of restakers
+
+If only a small group of stakers are participating in restaking for many services, then the system can become cryptoeconomically insecure.
+
+Here’s the example from whitepaper:
+
+> Consider an AVS which is secured by $8M of restaked ETH and which contains a total locked value of $2M. With a quorum of 50% required to capture the $2M of locked value, the application appears to be secure, since a successful attack would result in least $4M of the attacker’s stake being slashed. However, this may not be the case if the same set of stakers are also restaking in other AVSs. In the simplest case, exactly the same set of restakers participates in 10 other AVSs, each of which have $2M locked. Thus the total profit from corrupting this group of restakers is 20M$ but the total value at stake is only 8M$ thus making the system cryptoeconomically insecure.
+
+It's saying that the system is at risk if the same stakers are involved in multiple services, making it possible to gain more from an attack than losing all the capital stake. (attack > stake)
+
+Most of the risk mitigation is up to the AVS design. Applications can set some rules for the types of stakers they want; for example, you can only have natively staked ETH. Additionally, apps can limit the amount of funds that can be stolen during an attack (e.g., a bridge can restrict the value flow within the period of slashing).
+
+### Staker can’t pay the slashing fee
+
+If the mechanism for re-balancing collateral in EigenLayer fails due to slow adjustment, latency, or incorrect parameters, it can expose the system to various security risks. Therefore, services on EigenLayer must maintain proper ETH balance to ensure the safety and stability of the network.
+
+Consider the case where a staker who is restaking in multiple services acts dishonestly in various services (before the slashing is imposed), and then they don't have enough ETH to pay the slashing fees. What about when the gas fees are high, and the tx doesn't go through? The contracts are on Ethereum L1, so when the gas fees are high, this can create a problem for new AVS to be deployed, but more importantly for the stakers slashing to take place and pay-outs.
+
+It's crucial that stakers can actually pay the slashing fee on time if they act dishonestly.
+
+This is again up to the AVS design. For example, you can design the system so that if a slashing tx hasn't occurred, the staker might be unable to run the service for a certain time. However, this introduces a new risk that no stakers are running the services needed for the AVS at a specific time.
+
+### Operator Centralization: Off-chain Software Requirements
+
+The off-chain software specs depend on the AVS design.
+
+If services impose high off-chain software requirements, they create barriers to entry for potential stakers and operators. These complex specifications can lead to a situation where only those with advanced infrastructure can participate, resulting in centralization.
+
+It’s suggested that services have simple off-chain software requirements to encourage more people to participate. Easy-to-meet requirements allow many operators to join without needing to upgrade their current systems. This way, more individuals can become operators, and the network avoids becoming centralized due to heavy or complex requirements.
+
+### Bootstrapping the services
+
+Big Q: will ETH stakers (re)stake?
+
+It’s one of the most attractive projects and gained a lot of traction in a very short time. However, as with any new ecosystem, there’s a significant need for education among stakers, service developers, and users. I generally view this as an opportunity for those looking to get involved 🙂
+
+## EigenLayer Use-Cases: What can I really do?
+
+EigenLayer enables many use cases, including MEV Management, Data Availability Layer (DA), Decentralized Sequencers, Light-Node Bridges, and Fast-Mode Bridges.
+
+These are a few possibilities, and there can be many more. For more information and potential use cases, you can visit the [EigenLayer forum](https://forum.eigenlayer.xyz/c/middleware/8). Like any new and evolving technology, some may work out while others may not.
+
+Although most of these use cases don't have their docs available, I want to provide an overview of a proposal around MEV Management, which has some resources for me to go with. I'm also grateful to the Discord moderators who directed me to these resources. (I wish it were docs>discord, but I've come to accept that docs are the last place updated in the crypto world.)
+
+Essentially, EigenLayer enables programmable staking and slashing, which is a powerful tool for a decentralized network. Let's get into some technical details to make this a bit tangible.
+
+### MEV Management w/EigenLayer - Brief Overview
+
+*This is a whole new topic. I’m going to assume you have some knowledge on MEV-boost and proposer-builder separation (PBS) for this section. Here a [comprehensive list](https://docs.flashbots.net/flashbots-mev-boost/resources) of resources to get started if you’re new to these. *
+
+First, some background - [MEV-boost](https://github.com/flashbots/mev-boost) is a middleware software run by validators that implements proposer-builder separation (PBS). PBS is currently not implemented in the Ethereum protocol itself, mev-boost is a way to test and experiment while the research continues.
+
+PBS introduces a new role, the block builder, responsible for building the optimal block and offering it to the block proposer. Block proposers auction off the right to make the entire block. The block proposer cannot see the contents of the block; they simply choose the most profitable one.
+
+The current implementation of MEV-boost only allows for full-block building, limiting the freedom of block proposers, who are a highly decentralized set.
+
+
+Let’s look at this proposal: [Preserving Block Proposer Agency with MEV-Boost using EigenLayer](https://forum.eigenlayer.xyz/t/mev-boost-preserving-block-proposer-agency-with-mev-boost-using-eigenlayer)
+
+The proposal aims to improve MEV management by upgrading MEV-Boost with partial-block building, giving block proposers more control and increasing censorship resistance using EigenLayer.
+
+Under this proposal, block proposers must opt-in to EigenLayer and follow additional conditions or risk losing part of their stake. They can now fill part of the block with their transactions, enabling greater control in block composition. If the proposer proposes a block other than the alternative block they assembled, they must include the Builder_part in that block, or they will be slashed by EigenLayer. You can find more details and potential risks of the proposed approach in the proposal itself.
+
+The main idea is that when you think about the applications, consider adding new customizable slashing conditions, which can give you a much more programmable and flexible network.
+
+🌟 For a deeper dive into this topic, I highly recommend checking out [Jon's in-depth post](https://joncharbonneau.substack.com/p/censorship-wat-do) and [Alex’s presentation on mev-boost](https://www.youtube.com/watch?v=-xY1EEzcp0s&ab_channel=EthereumCatHerders)
+
+### Projects interested in EigenLayer
+- EigenLayer is building the EigenDA which is a hyper scaled data availability layer, which is the first use-case that being built by the team themselves.
+- Espresso Systems is developing Espresso Sequencer in they plan to use EigenLayer for restaking
+- Mantle is planning to use EigenLayer’s data availability(DA) layer
+
+## Current State of EigenLayer
+[EigenLayer testnet](https://www.blog.eigenlayer.xyz/stage-1-testnet-announcement/) launched on Apr 6, 2023 on Ethereum Goerli network. This is an early, non-incentivized, and experimental testnet.
+
+The protocol will launch in three stages: Stakers, Operators, and Services. Currently the Stage 1 is for stakers. Stakers can participate in liquid re-staking and native re-staking, you can follow the stats [here](https://restaking.nethermind.io/).
+
+## Conclusion
+In conclusion, EigenLayer is an innovative solution that addresses the challenges associated with infrastructure-level innovation. By leveraging a decentralized trust network and introducing restaking, EigenLayer enables ETH stakers to support new Ethereum projects while gaining access to additional staking opportunities. However, it's important to play devil's advocate and acknowledge the potential risks involved, such as operator collusion, restaker centralization, and bootstrapping the ecosystem.
+
+After all the research, I can say that EigenLayer is one of the most innovative ideas I've seen in the Ethereum ecosystem in a while. As with any new technology, it's important to remain critical and mindful of the risks involved. By doing so, we can ensure the development of a robust and trustworthy ecosystem.
+
+I usually do code-deep and this was different from what I typically do, so please be honest with the feedback and let me know if you have any questions, my [DM's](https://twitter.com/edatweets_) are open!
