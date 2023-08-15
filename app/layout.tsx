@@ -23,20 +23,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="max-w-2xl mx-auto py-10 px-4">
-            <header>
-              <div className="flex items-center justify-between">
-                <nav className="ml-auto text-sm font-medium space-x-6">
-                  <Link href="/">Home</Link>
-                  <Link href="/about">About</Link>
-                </nav>
-              </div>
-            </header>
             <h1 className="text-3xl font-bold mb-3">Eda Akturk</h1>
-            <p className="mb-3">
-              Contact me on 
+            <p className="mb-3"> 
               <a href="https://twitter.com/edatweets_" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700"> Twitter</a>, 
-              <a href="https://github.com/edakturk14" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700"> GitHub</a> or 
-              <a href="https://www.linkedin.com/in/eda-akturk-a9624b105/" className="text-blue-500 hover:text-blue-600"> Linkedin</a>.
+              <a href="https://github.com/edakturk14" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700"> GitHub</a>, 
+              <a href="https://www.linkedin.com/in/eda-akturk-a9624b105/" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700"> Linkedin</a>,           
+              <a href="https://www.goodreads.com/user/show/132319008-eda-akturk" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700"> GoodReads</a>.
             </p>
             <main>{children}</main>
           </div>
