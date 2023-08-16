@@ -1,0 +1,105 @@
+---
+title: Building Decentralized Applications on Fuel
+description: Introduction to modular blockchains, a brief overview of Fuel, and explain the Fuel dApp Template
+date: "2023-04-10"
+---
+
+<Image src="/fuel-banner.png" width="718" height="404" alt="Banner"/>
+
+*Co-authored by Eda and Carlos*
+
+We built a [Fuel dApp Template](https://github.com/edakturk14/fuel-starter-kit): a toolkit to build decentralized applications on Fuel!
+
+%[https://www.youtube.com/watch?v=XwaAJEnnVcE&ab\_channel=edatweets] 
+
+In this blog post, we'll provide an introduction to modular blockchains, a brief overview of Fuel, and explain the Fuel dApp Template.
+
+---
+
+# Introduction: Modular Blockchains & Fuel
+
+## **Modular Blockchains:** A Quick Overview
+
+**A monolithic blockchain** is an architecture where the blockchain's core functions are handled on a single layer, known as Layer 1. This approach makes it difficult to optimize a single layer without sacrificing decentralization, scalability, and/or security.
+
+This is where modular blockchains come in, offering an architectural design that seeks to resolve scalability issues with a new approach. **Modular blockchains** offer a new approach to blockchain architectures by separating the **fundamental** **components** (consensus, execution, data availability, settlement) of the blockchain into **individual modules**. Each component is **specialized** for a specific task which allows for increased customization and improved efficiency. You can read an introduction to modular architecture over [here](https://eda.hashnode.dev/modular-blockchains-getting-started-with-fuel).
+
+![Screen Shot 2022-12-14 at 10.05.20.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1671001583093/5fsDRou_T.png?auto=compress,format&format=webp align="left")
+
+Modular blockchains have different parts that are specialized for specific tasks. This improves their performance and allows developers to choose which parts to use, creating blockchains that meet their needs. Changes can also be made easily without affecting the whole system. In other words, having separate layers provides **scalability** and **flexibility.**
+
+## Fuel: Execution Layer for Modular Blockchain Stack
+
+![](https://fuel-labs.ghost.io/content/images/2022/09/image-10.png align="left")
+
+[Fuel](http://fuel.network) is focused on building the fastest **Execution Layer** for the modular blockchain stack. It has its own domain-specific programming language called [Sway](https://fuellabs.github.io/sway/v0.24.3/index.html), which is inspired by Rust and specifically designed for writing Fuel smart contracts. Fuel's orchestrator, Fuel Orchestrator (Forc), serves as the toolchain and system package for Sway. Fuel also has its own Virtual Machine, FuelVM, and offers a comprehensive suite of developer tools.
+
+---
+
+# Introducing the Fuel dApp Template
+
+Fuel dApp Template is a developer-friendly **toolkit** that allows you to quickly build decentralized applications on Fuel. It is built using NextJS, Tailwind CSS, Forc, Sway and Typescript and comes with several out-of-the-box features including:
+
+* Local toolchain setup
+    
+* Fuel Browser wallet connection
+    
+* Commands to easily deploy smart contracts on the Fuel Beta-3 Testnet
+    
+* Customizable frontend built using Tailwind CSS
+    
+
+You can jump to the [repo](https://github.com/edakturk14/fuel-starter-kit) and see a live version of it [here](http://fuel-dapp-template-nextjs.vercel.app)!
+
+## Short Explainer
+
+The Fuel dApp Template is organized as a monorepo, that has two main components: the **smart contract** component & the **Next.js app** component. Inside the packages folder, you'll find the following:
+
+* **fuel**: contains the smart contract, local toolchain setup. The `package.json` file in the "fuel" folder contains various commands that can be used to manage the local toolchain and deploy the smart contract.
+    
+* **nextjs**: The Next.js app component is a fully functional web application that is built using Next.js, a popular React-based framework for building web applications. It includes a pre-configured tailwind CSS setup and is connected to the Fuel network and the deployed smart contract. The dApp communicates with the smart contract and shows the relevant data and functions for the end-user.
+    
+
+Essentially, the Fuel dApp Template significantly **simplifies the development process** for creating decentralized applications on Fuel. It achieves this by offering pre-built components, configurations, and integration of essential features, ensuring the rapid and effortless deployment of the smart contract and web application.
+
+## How to get started?
+
+To get started, head over to the [README](https://github.com/edakturk14/fuel-dapp-template) file for more detailed information. However, here's a quick outline of the essential steps to help you set up your development environment with ease.
+
+Once you setup your environment, you'll just need three commands to setup your application:
+
+* `yarn fuel:chain` This command initiates your local toolchain and displays several test accounts in the terminal (similar to starting your Hardhat toolchain, if you're familiar with that).
+    
+* `yarn fuel:deploy:local` or `yarn:deploy:testnet` Use this command to deploy your contract to either the local network or the Beta3 testnet. Before deploying, ensure that the correct network is set in your ".env" file, and don't forget to update the contract ID once it has been deployed.
+    
+* `yarn next:start` This command starts your next js app. Now you can open it up and start testing out the app.
+    
+
+You can find these yarn commands, along with a few others, in the `package.json` files within the fuel and NextJS folders. If you need additional commands or want to create shortcuts for specific tasks, you can easily edit the package.json files.
+
+## Contributions Welcome
+
+We invite you to contribute to the Fuel dApp Template and help improve its functionality! You can learn about the contribution guidelines over [here](https://github.com/edakturk14/fuel-dapp-template/blob/main/CONTRIBUTING.md).
+
+## What's next?
+
+First, if you're a builder here are your go-to resources to learn more:
+
+* [**Sway Book**](https://fuellabs.github.io/sway/latest) 🌴
+    
+* [**Rust SDK Book**](https://fuellabs.github.io/fuels-rs/latest)
+    
+* [**TypeScript SDK**](https://github.com/FuelLabs/fuels-ts)
+    
+
+For updates and questions, you can follow the [Fuel forum](https://forum.fuel.network/).
+
+Also [here's](https://github.com/FuelLabs/awesome-fuel) your go-to repo for developer resources, projects building on fuel, and people to follow.
+
+Well, I'll never get bored of suggesting people attend Hackathons. There are both virtual and in-real-life hackathons that you can attend. You can probably find the Fuel team in most of them! And hope that the dApp template will expedite your building process!
+
+---
+
+Modular blockchains enable the creation of flexible, scalable blockchain systems by breaking down the architecture into smaller, customizable modules. Fuel's focus on developer tooling creates an effective and seamless experience for developers, making it an attractive option for building decentralized applications. Give the Fuel dApp Template a try and let us know if you have any questions or comments!
+
+Catch you at the next one! 👋

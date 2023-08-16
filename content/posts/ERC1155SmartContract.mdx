@@ -1,0 +1,312 @@
+---
+title: Create & deploy an ERC-1155 smart contract to Optimism using Foundry
+date: "2023-03-08"
+description: ERC-1155 defines a standard for both fungible and non-fungible tokens
+---
+
+<Image src="/erc1155-banner.png" width="718" height="404" alt="Banner"/>
+
+*Originally published on [Hashnode](https://eda.hashnode.dev/create-deploy-an-erc-1155-smart-contract-to-optimism-using-foundry)*
+
+Different token standards can be used to create NFTs on the Ethereum blockchain. For example, ERC-721 is for unique assets like art and collectibles. While ERC-1155 makes it possible to have both unique and fungible tokens in a single contract alongside a batch transfer feature that can significantly reduce gas costs.
+
+Most educational material I've seen uses the ERC-721 token standard for NFTs, which I recommend checking out if it's your first NFT or smart contract. However, if you're familiar with some of the token standards and have been writing smart contracts, you should also learn about others like ERC-1155 & ERC721A.
+
+In this blog post, I want to:
+
+* Provide an overview and comparison of ERC-20, ERC-721 & ERC-1155 token standards
+    
+* Walkthrough of how to create an ERC-1155 smart contract using Foundry & deploying to Optimism
+    
+
+---
+
+# Intro to NFTS & Token Standards
+
+I previously wrote a post on the [NFTs & Creating an NFT collection](https://eda.hashnode.dev/create-your-own-nft-collection-on-ethereum) on Ethereum. On that post, I created an NFT collection using the ERC-721 token standard, a smart contract that creates non-fungible tokens on Ethereum.
+
+Now, I want to revisit ERC-721 and discuss other popular standards. I'll just briefly introduce NFTs over here before moving to the token standards and tutorial.
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1676991202208/8a35af06-00ef-4b06-a27e-87c3b7e9670d.png align="center")
+
+### Non-Fungible Tokens (NFTs)
+
+NFT stands for Non-Fungible token. Non-fungible means that each asset has unique properties and can not be changed with one another. In other words, NFTs are **unique digital assets on the blockchain**.
+
+NFTs are created by running the code on the smart contract, also known as "**minting**." When you want to mint, buy or sell an NFT, you need to pay the [**gas fee**](https://ethereum.org/en/developers/docs/gas/). This is the transaction cost.
+
+**ERC-721** and **ERC-1155** are popular Ethereum token standards that can be used to create NFTs on the Ethereum blockchain. There's also the **ERC-721A** implementation, an extension of the ERC-721 standard.
+
+### Fungible Tokens
+
+A fungible token means that all the tokens are *identical*. If we each have a DAI token, they are indifferent. Your DAI and my DAI are exactly the same.
+
+**ERC-20** is a standard for smart contracts that create fungible tokens on Ethereum.
+
+## Token Standards: ERC-20, ERC-1155 & ERC-721
+
+[ERC-20](https://eips.ethereum.org/EIPS/eip-20), [ERC-721](https://eips.ethereum.org/EIPS/eip-721) and [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155) are token standards for fungible, non-fungible, and multi-token contracts, respectively. There's also the [ERC-721A](https://github.com/chiru-labs/ERC721A) contract, an extension to the ERC-721 optimized for lower gas during batch mints.
+
+Today many NFT projects and tutorials use ERC-721; however, it's important to learn about ERC-1155 and also just to briefly know about different token standards. Especially since ERC-1155 was specifically designed to overcome the limitations of earlier token standards, resulting in a more flexible standard with a broader range of use cases.
+
+### ERC-20:
+
+* Defines a standard for **fungible tokens**
+    
+* Each token is interchangeable with one other
+    
+* One of the most widely used token standards on Ethereum, with many popular tokens such as DAI, USDC, LINK and UNI
+    
+
+### ERC-721:
+
+* Defines a standard for **non-fungible tokens** (NFTs)
+    
+* Each token is **unique and non-interchangeable**
+    
+* Each token is stored as a **separate smart contract** on the blockchain, which can make it more expensive to create and manage large numbers of tokens.
+    
+* Typically used for digital assets such as art, collectibles, and unique in-game items
+    
+* There are many popular ERC-721 NFT collections; some of the most well-known ones are CryptoKitties, NBA Top Shot, Art Blocks and Bored Ape Yacht Club.
+    
+
+Before diving into ERC-1155, it's worth briefly mentioning [**ERC-721A**](https://github.com/chiru-labs/ERC721A), an extension to the ERC-721 standard which adds optional interfaces to create more complex non-fungible tokens.
+
+**ERC-721A:**
+
+* **Community-driven** extension of the ERC-721 standard created by [Azuki](https://www.azuki.com/erc721a). It's not an official Ethereum Improvement Proposal (EIP), meaning it has not been formally approved by the Ethereum community.
+    
+* Used for creating non-fungible tokens (NFTs) on Ethereum
+    
+* Allows for significant gas savings when **minting multiple NFTs in a single transaction.**
+    
+
+### ERC-1155:
+
+* Defines a standard for **both fungible and non-fungible tokens**
+    
+* Tokens can be **unique and non-interchangeable** (like ERC-721 tokens) or **identical and interchangeable** (like ERC-20 tokens)
+    
+* **Multiple tokens can be stored in a single smart contract**, making it more **gas efficient** compared to ERC-721
+    
+* Allows for **batch transfers**, which can significantly reduce gas costs for large collections of tokens. Batch transfers allow multiple token transfers to occur within a single transaction. So if you want to send multiple tokens, you can do this with a single batch transfer instead of multiple transactions, reducing the number of transactions you need to make and hence the gas costs.
+    
+* Supports **more complex token designs**. It can be used for broader use cases, such as in-game items in different colors or rarity levels. For example, if you wanted to use fungible and non-fungible tokens, you would need to use both ERC-20 and the ERC-721 contracts; with ERC-1155, you can now achieve this in a single, smart contract.
+    
+* Some projects that use the ERC-1155 are Enjin, The Sandbox & Immutable X.
+    
+
+*Edit: There's a new* [*SS2ERC721*](https://github.com/showtime-xyz/SS2ERC721#comparison-with-erc721a) *contract which is a new experimental ERC721 base contract that allows for hyper-optimized batch minting created by the showtime team. This contract allows to mint-1-to-N-addresses which is a new feature.*
+
+So now the question arises **when to use which token standard?**
+
+## When to use ERC-1155 vs ERC-721?
+
+Here are the factors to consider:
+
+* **Uniqueness**: ERC-721 tokens are unique, while ERC1155 tokens can be unique and fungible.
+    
+* **Transferability**: ERC-721 tokens can only be transferred one at a time, while ERC-1155 tokens allow batch transfers.
+    
+* **Gas costs**: Because ERC-721 tokens are unique, they require more gas to create, transfer and store than ERC-1155 tokens. If you are concerned about gas costs, ERC-1155 may be better.
+    
+* **Use case**: ERC-721 tokens are often used to represent one-of-a-kind assets such as digital art or collectibles, while ERC-1155 tokens are often used to represent a range of fungible and non-fungible assets such as gaming items or reward tokens.
+    
+* **Simplicity & Developer Experience**: It's also worth noting that for new developers learning about Ethereum, it's easier to use the ERC-721 token standard for NFTs because the contract is much simpler. ERC-1155 has more features, so it's more complex.
+    
+
+In summary, if you need to **represent unique assets and transfer them one at a time, then ERC-721** may be the better choice. On the other hand, if you need to **represent a range of assets that can be transferred in batches and potentially duplicated, then ERC-1155** can be the better way to go.
+
+---
+
+# Create & Deploy an ERC-1155 Smart Contract to Optimism
+
+In this section, we'll write & deploy an **ERC-1155** smart contract to **Optimism** using **Foundry**.
+
+[**Optimism**](https://www.optimism.io/) is a Layer 2 blockchain that is compatible with Ethereum Virtual Machine(EVM), fast and cost-effective. By using Optimism, we can avoid the high costs on Ethereum's Layer 1 Mainnet.
+
+For this walkthrough, I'll use [**Foundry**](https://book.getfoundry.sh/). Foundry is very fast and makes testing a lot more convenient. Although we'll not run through the testing process for this post, I hope to provide a brief overview of Foundry. You can also use Hardhat, a popular development environment for Ethereum smart contracts
+
+👉 *Here is the* [*repo*](https://github.com/edakturk14/smart-contracts-overview-foundry) *for the project, which contains example contracts of ERC20, ERC721 and ERC1155, along with the tests.*
+
+## Project Tools:
+
+* [Metamask Wallet](https://metamask.io/): crypto wallet
+    
+* [Foundry](https://book.getfoundry.sh/) is a smart contract development toolchain. Similar to Hardhat.
+    
+* [OpenZepplin Contracts](https://openzeppelin.com/): library for secure smart contract implementations. We will be using the ERC1155 library standard.
+    
+* [Alchemy](https://dashboard.alchemyapi.io/): Ethereum developer platform. We will use the Alchemy API to interact with Alchemy's Ethereum infrastructure.
+    
+* [Pinata](https://www.pinata.cloud/): IPFS pinning service
+    
+
+*Please note that you can deploy to a testnet, which is free to deploy to. I paid approx. 7 USD to deploy my contract to Optimism.*
+
+## Prerequisites
+
+1. Follow the steps [here](https://book.getfoundry.sh/getting-started/installation) to install Foundry.
+    
+2. Create an account on [Metamask](https://metamask.io/) and switch to **Optimism** Network. You'll need to have some ETH to deploy the contract. Here's a [post](https://www.chainshot.com/article/optimism#:~:text=Depositing%20ETH%20from%20Mainnet%20to%20Optimism&text=Simply%20enter%20the%20amount%20of,other%20transaction%20on%20Ethereum's%20Mainnet.) on getting your tokens onto the Optimism network. I paid approx. 0.005 ETH, which is around 7 USD, to deploy my contract. You can also use a testnet such as Goerli or Sepolia to deploy for free.
+    
+3. You will need your [Alchemy API key](https://alchemy.com/?r=63afe97f6fd780ac). To get an API key, log in to your Alchemy account and follow the steps to create a new app. For the network, choose Optimism. Once the app is created, click on "view key" to get your API key.
+    
+    ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678133259996/d0271b56-2388-4df4-bc5d-1e8e2347302c.png align="center")
+    
+
+## Create an NFT Collection with ERC-1155
+
+1. Start a new project with Foundry. [**Forge**](https://github.com/foundry-rs/foundry/tree/master/forge) is the command-line tool used to compile, test, and deploy your smart contracts. Create a new project with the following command:
+    
+    ```bash
+    forge init nft-project
+    ```
+    
+    Here's what the project folder looks like:
+    
+    ```bash
+    tree -L 1
+    .
+    ├── foundry.toml
+    ├── lib
+    ├── script
+    ├── src
+    └── test
+    ```
+    
+    You can use `forge build` to build the project and `forge test` to run the tests. For other commands check `forge --help`.
+    
+2. We'll need to create an ERC-1155 smart contract. First, add the [OpenZepplin implementation](https://github.com/OpenZeppelin/openzeppelin-contracts) for smart contracts.
+    
+    ```bash
+    forge install openzeppelin/openzeppelin-contracts
+    ```
+    
+    In the `lib` folder you will see that Forge installed `openzepplin-contracts`
+    
+3. We will remap the dependencies to make them easier to use. Create a `remappings.txt` file in the root of the project.
+    
+    ```bash
+    touch  remappings.txt
+    ```
+    
+    Here's how the content of the file should be:
+    
+    ```bash
+    @openzeppelin/=lib/openzeppelin-contracts/
+    ```
+    
+4. Let's create our smart contract. In the `src` directory, create a new solidity file.
+    
+    ```bash
+    touch  src/ERC1155NFT.sol
+    ```
+    
+    You can delete the src/Counter.sol and the test/Counter.t.sol, we won't be using them.
+    
+5. Let's set the metadata for the tokens. The ERC-1155 metadata URI JSON schema can be found [here](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1155.md#erc-1155-metadata-uri-json-schema). Create two JSON files with the metadata for your NFT and your Token. Add the two files(call them 1.json and 2.json to represent the IDs) into a folder.
+    
+    ```json
+    {"name":"Eda's NFT","description":"The NFT file","image":"https://i.imgur.com/kWFcpJk.jpeg"}
+    ```
+    
+6. We want to have the metadata on a decentralized network. To store the images and all the NFT metadata I'll be using Pinata which will upload the data to IPFS. Login to your Pinata account and upload the folder.
+    
+    Once uploaded, you'll see the CID for the folder. You'll need this for the URI.
+    
+    ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678290406348/e24a7375-d6e4-44b0-8b2e-0fc28084cc5c.png align="center")
+    
+    If you click on the folder you'll see the details of the files separately and the index on IPFS.
+    
+    ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678290390883/3cda57c4-6b18-4587-b484-765d86b599c4.png align="center")
+    
+7. Below you can see a sample **ERC-1155 token smart contract**. I have added some comments to explain what's going on in the code. Copy & paste it onto your solidity file.
+    
+    ```solidity
+    pragma solidity ^0.8.0;
+    
+    import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+    import "@openzeppelin/contracts/access/Ownable.sol";
+    
+    contract ERC1155NFT is ERC1155, Ownable {
+    
+        // ID values for the NFT and TOKEN tokens.
+        uint256 public constant NFT_ID = 1;
+        uint256 public constant TOKEN_ID = 2;
+    
+        // Mapping to track whether an address has already minted an NFT token
+        mapping (address => bool) private _nftMinted;
+    
+        constructor() ERC1155("https://gateway.pinata.cloud/ipfs/<YOUR_CID>/{id}.json") {
+            _mint(msg.sender, TOKEN_ID, 100, "");
+            _mint(msg.sender, NFT_ID, 1, "");
+        }
+    
+        function mintNFT(address account, bytes memory data) public onlyOwner {
+            // Check if the account has already minted an NFT
+            require(!_nftMinted[account], "NFT already minted");
+    
+            // Mark the account as having minted an NFT
+            _nftMinted[account] = true;
+    
+            // Mint the NFT token to the specified account with ID 1 and quantity 1
+            _mint(account, NFT_ID, 1, data);
+        }
+    
+        function mintToken(address account, uint256 amount, bytes memory data) public onlyOwner {
+            // Mint the TOKEN token to the specified account with ID 2 and the specified quantity
+            _mint(account, TOKEN_ID, amount, data);
+        }
+    }
+    ```
+    
+    * This contract implements the ERC1155 token standard for non-fungible tokens (NFTs). The contract allows us to **create both** **fungible** **and non-fungible tokens.**
+        
+        * TOKEN: A fungible token with ID 1 that can be minted and burned by the contract owner.
+            
+        * NFT: A non-fungible token with ID 2 that can only be minted by the contract owner.
+            
+    * The URI in the ERC1155 constructor allows us to associate metadata with the tokens
+        
+    * For simplicity, I have minted the tokens in the constructor. The deployer account should have both fungible and non-fungible tokens.
+        
+8. To deploy a contract, we need the RPC URL and private key of the account which will deploy the smart contract. Set the environment variables from your terminal.
+    
+    ```bash
+    export RPC_URL=https://opt-mainnet.g.alchemy.com/v2/<YOUR_API_KEY>
+    export PRIVATE_KEY=<YOUR_PRIVATE_KEY>
+    export ETHERSCAN_API_KEY=<YOUR_ETHERSCAN_API_KEY>
+    ```
+    
+    * We'll be deploying to Optimism. Get your metamask private key. You can get your key by clicking Account Details --&gt; Export Private Key from your Metamask extension. **NEVER SHARE YOUR PRIVATE WITH ANYONE AND DON'T PUSH IT TO GITHUB!** Make sure to have some ETH in your Optimism account.
+        
+    * Add your Alchemy API Key.
+        
+    * *(Optional)* Get your Optimism Etherscan API key to verify the smart contract. You can create an account and follow the steps to create an API key over [here](https://optimistic.etherscan.io/myapikey).
+        
+9. Now you can deploy your ERC-1155 Contract with Forge by running the command below. I've added the `verify` tag to directly verify the contract on etherscan after deployment.
+    
+    ```bash
+    forge create ERC1155NFT --rpc-url=$RPC_URL --private-key=$PRIVATE_KEY --verify
+    ```
+    
+    If everything is working, it should deploy the contract and print out the details to the terminal. Head over to [Optimism Block Explorer](https://optimistic.etherscan.io/) to have a look.
+    
+    ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678134144380/285ffaf8-e74e-49e7-a7ce-6f08f3a917e6.png align="center")
+    
+
+🎉 There you go! We've just deployed an **ERC-1155** contract to the Optimism Network.
+
+You can head over to [abi.ninja](https://abi.ninja/) to easily interact with your smart contract. On the left side, you'll see the read and write functions. Notice the "**safeBatchTransferFrom**" function that allows you to transfer multiple tokens in a single transaction.
+
+### Testing
+
+We'll not be going over the tests in this blog post but you can find a simple implementation of the contracts (ERC20, ERC721 and ERC115) and their respective tests in the repo over [here](https://github.com/edakturk14/smart-contracts-overview-foundry). You can run the tests with: `forge test.`You can also get gas reports by running: `forge test --gas-report`
+
+---
+
+ERC-721 and ERC-1155 are token standards to create NFTs on Ethereum with different use cases. ERC-721 is great for unique assets such as digital art and collectibles, while ERC-1155 is more flexible and can represent both unique and fungible assets. When choosing the contract, consider your own use case and don't just rush to ERC-721. 👩‍💻
+
+If you have any questions or comments, drop them below or slide into my DM's on [Twitter](https://twitter.com/edatweets_), I'd love to hear from you. Catch you at the next one! 👋

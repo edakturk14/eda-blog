@@ -1,0 +1,388 @@
+---
+title: Intro to Zero-knowledge & Building zkApps w/Mina Protocol
+description: Zero-knowledge proofs are a way to cryptographically prove a statement is true without revealing the statement itself
+date: "2023-11-15"
+---
+<Image src="/zero-knowladge-banner.png" width="718" height="404" alt="Banner"/>
+
+*Originally published on [Hashnode](https://eda.hashnode.dev/zero-knowledge-building-zkapps-mina-protocol)*
+
+TL;DR:
+- Zero-knowledge proofs are a way to cryptographically prove a statement is true without revealing the statement itself
+- Mina is a Layer 1 blockchain focused on zero-knowledge. It remains at a constant size of 22KB by using recursive zk-SNARKs
+- SnarkyJS is the programming language for creating zkApps, which are zero-knowledge smart contracts on Mina
+- Using the Mina zkApp CLI you can bootstrap a zkApp & deploy it to the Berkeley Testnet
+
+Zero-knowledge(zk) is one of the most popular buzzwords in the blockchain ecosystem. It sounds like a very complex technical term and, to be frank its also often misused. *zkEVM,* *zk-proofs,* *zk-SNARKS,* and *zk-STARKS* are just some words you may have heard floating around. Over the past few months I've been learning about zero-knowledge and found it to be one of the most interesting technologies with the potential to unlock many new use-cases.
+
+Mina Protocol is a blockchain project that uses zero-knowledge proofs at its core. Developers can build zkApps (aka zero-knowledge smart contracts) using Mina, where users can keep their data private.
+
+In this post I want to cover the following:
+- What's zero-knowledge technology?
+- What’s Mina Protocol, SnarkyJs & zkApps?
+- How to write a zero-knowledge smart contract and deploy to the Mina Blockchain
+- My experience and concluding ideas
+
+![6zuu5r.jpeg](https://cdn.hashnode.com/res/hashnode/image/upload/v1667839891886/PAjCTRIST.jpeg align="center")
+
+---
+
+# Primer to Zero-Knowledge
+
+In cryptography, **zero-knowledge protocol** or **zero-knowledge proof (ZKP)** system is a method to prove that something is true without revealing any extra information.
+
+Zero-knowledge proofs were first coined in the paper from 1985: “[The Knowledge Complexity of Interactive Proof-Systems](http://people.csail.mit.edu/silvio/Selected%20Scientific%20Papers/Proof%20Systems/The_Knowledge_Complexity_Of_Interactive_Proof_Systems.pdf)", and defined as:
+
+> Zero-knowledge proofs are defined as those proofs that convey no additional knowledge other than the correctness of the proposition in question.
+
+In a more technical syntax, in a zero-knowledge proof system, the prover demonstrates to the verifier that they own a piece of information without revealing anything besides that validity of the statement.
+
+*An example:* The most common analogy is proving you are over a certain age when entering a bar. Bars have age restrictions, and to enter, you generally hand your ID over to the security guard, who checks that you are over the age limit. On your ID, there's your age, name, ID number and more information. The security guard now knows your age, surname, day of birth, country of birth etc. Basically, you share lots more than your age to prove that you're over 18.  Now instead, imagine sharing a cryptographic proof that you are over 18. This way, without sharing all the additional information, you can prove to them you're over the age limit. All other information (besides the fact that you're over 18) is private; you don't even need to share the day you were born or how old you are.
+
+### ZKPs in Blockchain
+
+Two important features of ZKPs are **privacy** and **scalability**; these are especially important in the context of blockchains.
+
+- **Privacy**: Public blockchains allow for complete transparency. However, while doing so, they typically lack privacy. Anyone can read all the transaction data on a public blockchain. ZKPs in blockchain enable us to keep data private. For example, users only disclose the information necessary for the action they want to perform, which is used to generate a zk-proof. The verifier will only require proof, not user-specific data.
+- **Scalability**: Scalability is one of the main challenges for blockchain adoption. ZKPs encapsulate the computation into a highly compressed cryptographic proof, significantly reducing the user data size. Using ZKPs off-chain and then sending the compressed data to the blockchain to be verified can increase the transactional throughput. Reduced size of the on-chain data also means that smaller computational resources are required to process, which lowers the requirements to run a node; this essentially can lead to higher **decentralization** of the network. (There are different approaches to how ZKPs are used to improve scalability for different blockchains. In the context of Ethereum, we mainly see ZKPs used in Layer 2 scaling solutions, which reduces the size of the data published to Layer 1. Since the data published to the mainnet is significantly smaller, it will require fewer resources to process hence faster transactions and lower costs. In the Mina blockchain, ZKPs compress the entire state of the blockchain and keep it a constant size at all times, enabling users with lower computational to participate at all times.) *We could also add decentralization as a core feature; I've added it here, as a by-product of scalability.*
+
+Worth noting that zero-knowledge proofs are neither new nor specific to the blockchain space. Given the nature of public blockchains, they present a huge opportunity, and so we're seeing many researchers and entrepreneurs exploring ZKPs.
+
+Some of the popular applications of ZKP in the blockchains space:
+- [ZCash](https://z.cash/) and [Monero](https://www.getmonero.org/) are privacy-focused blockchains (L1)
+- [zkSync](https://docs.zksync.io/userdocs/intro/#introduction), [StarkNet](https://starknet.io/) & [Scroll](https://scroll.io/) are examples of Validity Rollups on Ethereum using ZKPs
+- [Dark Forest](https://zkga.me/) is a game that uses ZKPs
+- [Mina Protocol](https://minaprotocol.com/): uses recursive ZKPs to keep the blockchain at a constant size
+
+In the next part of the post, we'll explore how Mina Protocol uses ZKPs & move onto building a zkApp on Mina.
+
+Before we dive in here are some follow-up resources on all things zero-knowledge:
+- [a16z curated set of resources](https://a16zcrypto.com/zero-knowledge-canon/)
+- [Zero-Knowledge Podcast](https://twitter.com/zeroknowledgefm) by [Anna Rose](https://twitter.com/AnnaRRose)
+- [ZKHack Whiteboard Session](https://zkhack.dev/whiteboard/)
+
+---
+
+# Introduction to Mina Protocol, SnarkyJs & zkApps
+
+**[Mina](https://minaprotocol.com/) is a Layer 1, lightweight blockchain focused on zero-knowledge that aims to have a constant size of 22 kB.** It has its own native cryptocurrency called MINA to pay for transactions on the blockchain.
+
+### First, what does it mean to be a lightweight blockchain?
+
+Mina blockchain remains at a constant size of ~22kb.
+
+It's significantly smaller than other blockchains, and this is why the team set out to build Mina Protocol in the first place.
+
+![Screen Shot 2022-11-07 at 18.53.17.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1667836403944/qBfswbq7Y.png align="center")
+
+The thesis was that as blockchains grow in size, only a handful of participants will be able to participate because it will require advanced computational resources. This will lead to the gradual centralization of the networks. Hence the team decided to come up with Mina Protocol (formerly known as Coda) to solve this.
+
+A smaller blockchain size means fewer computational resources to participate because the participants need to do less processing and storing. Since the requirements are lower, more people can run a node. This can lead to higher decentralization since the barrier to entry is lower.
+
+### How does Mina Protocol work?
+
+Mina Blockchain can maintain a small size by using zero-knowledge technology.
+
+Mina uses a custom proof system called **Kimchi** based on recursive **zero-knowledge succinct non-interactive arguments of knowledge(zk-SNARKs)**, a type of zero-knowledge proof. Kimchi is developed by O(1) Labs, the core contributors of the Mina Protocol.
+
+*Worth noting that ZK-SNARKs are an important cryptographic tool used and researched by different blockchain teams. You can also checkout [Vitalik's post](https://vitalik.ca/general/2022/06/15/using_snarks.html) for some ideas on using ZK-SNARKS for privacy.*
+
+Here's a very simple overview of how the Mina Protocol works:
+- ZK-SNARKs capture the state of the entire blockchain. The network nodes store this proof instead of all the data.
+- When a new block is produced, a new snapshot is taken with the previous network state and the new block. This new lightweight snapshot reflects the entire state.
+- The process is repeated as new blocks are added.
+
+Simply put, by using a **recursive composition of zk-SNARKs, the blockchain remains at a constant size**.
+
+So, what happens to the historical data? That's where **Archive Nodes** come into play. These are special nodes on the Mina Blockchain that get the blockchain data and store it in a database. Archive data is needed for applications that use history(e.g., block explorer). It's also crucial in case of disaster recovery.
+
+You can read more about the protocol architecture on the [Mina Docs](https://docs.minaprotocol.com/) & [Mina Book](https://o1-labs.github.io/proof-systems/plonk/overview.html) for a deeper dive.
+
+### What are zkApps?
+
+Mina Protocol defines zkApps ("zero-knowledge apps") as smart contracts that use zk-SNARKs.
+
+Some properties of zkApps:
+- Uses **off-chain computation** and **on-chain verification**. Off-chain computation means that the app is run on the client-side(web app), and only the resulting ZKP is sent to the Mina blockchain.
+- They **keep the user's privacy** since users only disclose the required information and the smart contract can generate the proof without revealing the data itself.
+- The smart contract is written in **TypeScript** using **SnarkyJS**.
+
+![Screen Shot 2022-11-07 at 19.04.27.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1667837082419/hhPI-bnAn.png align="center")
+
+🤝 [Here's](https://www.youtube.com/watch?v=l89gdobCC2w&t=4s&ab_channel=ETHGlobal) a presentation where Evan explains how Ethereum can utilize Mina apps. It's cool to see how the technologies can come together to unlock interesting use cases.
+
+👷‍♀️ Worth mentioning a notable project working on the Ethereum x Mina bridge by =nil; Foundation, and you can find more about the project over [here](https://verify.mina.nil.foundation/).
+
+[Mina zkApp CLI](https://github.com/o1-labs/zkapp-cli) is a toolkit to write, test, & deploy zkApps to Mina Protocol using SnarkyJS.  SnarkyJS is a Typescript framework for writing zero-knowledge proof-based smart contracts. Alongside SnarkyJS, Mina zkApp CLI contains tools including Jest, Prettier, ESLint, Git & others for a quick starter with recommended best practices.
+
+![mina-cli-tool.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1667834577120/ECPVcFpGJ.png align="center")
+
+---
+
+# Getting started building on Mina Protocol
+
+In this section, I want to walk-through how to create & deploy a zkApp with Mina zkApp CLI to the Mina Testnet. You can find the repo for the tutorial [here](https://github.com/edakturk14/zk-tutorial/tree/main/zk-app).
+
+*I'd highly recommend checking out [Mina Docs](https://docs.minaprotocol.com/zkapps) for deeper dive and more examples. Also, here's a great presentation from [Jack](https://twitter.com/jackservia) on building [Mina zkApps](https://www.youtube.com/watch?v=kqjPwPV7qMA&ab_channel=ETHGlobal).*
+
+## Tools
+
+- NodeJS 16+
+- [Mina zkApp CLI](https://www.npmjs.com/package/zkapp-cli): package for creating zkApps using [SnarkyJS](https://docs.minaprotocol.com/zkapps/snarkyjs-reference) which is the Typescript Framework for writing zkApps on Mina Protocol. Test framework, formatting, git and other tools are also included in the NPM package
+- Berkeley Testnet: where the app will be deployed to (at the time of writing this post, zkApps are not yet available on Mina Mainnet)
+- [Mina Block Explorer for Berkeley](https://berkeley.minaexplorer.com/)
+- [Auro](https://www.aurowallet.com/): Mina Protocol Wallet
+
+## Installation
+
+1. First, make sure you have a [NodeJS](https://nodejs.org/en/) version 16 or above.
+    You can check the Node version by:
+    ```node -v``` or ```node --version```
+
+2. Install the zkApp package manager
+    ```npm install -g zkapp-cli```
+
+    You can check that you’ve installed by running:
+    ```zk —version```
+
+  (SnarkyJS comes with the zkapp-cli so you don't need to do a separate installation.)
+
+3. *Optional* Setup a Mina wallet
+
+    *This section is not required for the tutorial however I am adding it here because it's important to have the tools to interact with the blockchain, and that's where we need a crypto wallet.*
+
+    I've set up [Auro](https://www.aurowallet.com/), a wallet for Mina Protocol thats comes as a browser extension and mobile app. You can follow the setup steps on the website. After you add the extension to your browser, follow the steps to create an account. It will generate a mnemonic phrase and make sure to store this phrase safely. Once your account is created, you'll see the account information on the UI.
+
+  ![mina-wallet.png](https://raw.githubusercontent.com/edakturk14/zk-tutorial/main/IMAGES/mina-wallet.png align="center")
+
+## Create & Deploy a zkApp on Mina Protocol
+
+1. Create a new project folder
+
+    ```
+    zk project zk-app
+    ```
+
+  ![create-zk-app.png](https://raw.githubusercontent.com/edakturk14/zk-tutorial/dfba1f9bd2787a309bd7b7afbcecc8c614b7389f/IMAGES/create-zk-app.png align="left")
+
+    Here's what the project folder looks like:
+
+    ```
+    .
+    ├── build
+    ├── keys
+    ├── node_modules
+    ├── src
+    ├── LICENSE
+    ├── README.md
+    ├── babel.config.cjs
+    ├── config.json
+    ├── jest-resolver.cjs
+    ├── jest.config.js
+    ├── package-lock.json
+    ├── package.json
+    └── tsconfig.json
+    ```
+
+    The src folder that contains the smart contracts for the zkApp. You'll see: Add.ts and Add.test.ts. These are the zk-smart contract and the test file.
+
+    I have added the code and some comments to explain what's going on:
+
+    ```
+    import {
+      Field, // Field is used to describe unsigned integers
+      SmartContract, // class for zk app smart contracts
+      state,
+      State,
+      method,
+      DeployArgs,
+      Permissions,
+    } from 'snarkyjs';
+
+    /**
+     * The Add contract initializes the state variable 'num' to be a Field(1) when deployed.
+     * The Add contract adds Field(2) to 'num' when the update() func is called.
+     **/
+
+    export class Add extends SmartContract {
+
+      @state(Field) num = State<Field>(); // creates an on-chain state called num
+
+      deploy(args: DeployArgs) { // deploy method, describes the settings and permissions
+        super.deploy(args);
+        this.setPermissions({
+          ...Permissions.default(),
+          editState: Permissions.proofOrSignature(),
+          // Proof authorization: allows end users to change the zkApp account state
+          // Signature authorization: allows the deployer account
+        });
+      },
+
+      // @method decorator means that the func can be revoked by end-users
+      @method init() { // initialize the num value to Field(1) on deployment
+        this.num.set(Field(1));
+      }
+
+      @method update() { // function to update the on-chain state of num variable(state)
+        const currentState = this.num.get(); // get the on-chain state
+        this.num.assertEquals(currentState); // check this.num.get() is equal to the actual on-chain state
+        const newState = currentState.add(2); // add 2
+        newState.assertEquals(currentState.add(2)); // the assertion must be true to create the zk-proof
+        this.num.set(newState); // set the new on-chain state
+      }
+    }
+    ```
+
+    An important recap on how the app works is that the execution is done on the client side (browser). You can have public variables on the contract, in this example ```num``` is a on-chain value. In another case, you can pass private data into the contract, which is converted into a ZKP on the browser and isn't seen by the network.
+
+2. We need to add the project configurations, run the command below to get the configuration wizard.
+
+    ```
+    zk config
+    ```
+    Add the details below:
+
+    - Name: *berkeley-app*
+    - URL: *https://proxy.berkeley.minaexplorer.com/graphql*
+    - Fee: *0.1*
+
+  ![create-zk-app.png](https://raw.githubusercontent.com/edakturk14/zk-tutorial/dfba1f9bd2787a309bd7b7afbcecc8c614b7389f/IMAGES/zk-config.png align="left")
+
+3. Get Testnet Tokens(tMINA) by following the link on the previous terminal. It takes a few min.
+
+    *Testnet tokens are required to pay for the transaction to deploy the smart contract to the blockchain.*
+
+  ![get-testnet-tokens.png](https://raw.githubusercontent.com/edakturk14/zk-tutorial/dfba1f9bd2787a309bd7b7afbcecc8c614b7389f/IMAGES/testnet-tokens.png align="center")
+
+4. Deploy the app to the Mina Berkeley Testnet. Make sure you have your tMina in your account.
+
+    ```
+    zk deploy berkeley-app
+    ```
+
+  ![deploy-zkapp.png](https://raw.githubusercontent.com/edakturk14/zk-tutorial/dfba1f9bd2787a309bd7b7afbcecc8c614b7389f/IMAGES/deploy-app.png align="center")
+
+ 🎉 Wohoo! You've deployed your smart contracts onto the Mina Berkeley Testnet.
+
+5. Create a small script to interact with the contract locally. I've created ```src/main.ts``` and added the code below. I've added comments to explain what's going on.
+
+    ```
+    import { Add } from './Add.js';
+    import {
+      isReady,
+      shutdown,
+      Mina,
+      PrivateKey,
+      AccountUpdate,
+    } from 'snarkyjs';
+
+    (async function main() {
+      await isReady;
+      console.log("Starting");
+
+      // start a local blockchain
+      const Local = Mina.LocalBlockchain();
+      Mina.setActiveInstance(Local);
+      const deployerAccount = Local.testAccounts[0].privateKey;
+
+      // create a destination to deploy the smart contract
+      const zkAppPrivateKey = PrivateKey.random();
+      const zkAppAddress = zkAppPrivateKey.toPublicKey();
+
+      // create an instance of Add - and deploy it to zkAppAddress
+      const zkAppInstance = new Add(zkAppAddress);
+      const deploy_txn = await Mina.transaction(deployerAccount, () => {
+        AccountUpdate.fundNewAccount(deployerAccount);
+        zkAppInstance.deploy({ zkappKey: zkAppPrivateKey });
+        zkAppInstance.init();
+        zkAppInstance.sign(zkAppPrivateKey);
+      });
+      await deploy_txn.send().wait();
+
+      // get the initial state of Add after deployment
+      const num0 = zkAppInstance.num.get();
+      console.log('Num after init:', num0.toString());
+
+      // ----------------------------------------------------
+
+      const txn1 = await Mina.transaction(deployerAccount, () => {
+        zkAppInstance.update();
+        zkAppInstance.sign(zkAppPrivateKey);
+      });
+      await txn1.send().wait();
+
+      const num1 = zkAppInstance.num.get();
+      console.log('Add 2:', num1.toString());
+
+      // ----------------------------------------------------
+
+      try {
+        const txn2 = await Mina.transaction(deployerAccount, () => {
+          zkAppInstance.update();
+          zkAppInstance.sign(zkAppPrivateKey);
+        });
+        await txn2.send().wait();
+      } catch (ex: any) {
+        console.log(ex.message);
+      }
+      const num2 = zkAppInstance.num.get();
+      console.log('Add 2:', num2.toString());
+
+      // ----------------------------------------------------
+
+      const txn3 = await Mina.transaction(deployerAccount, () => {
+        zkAppInstance.update();
+        zkAppInstance.sign(zkAppPrivateKey);
+      });
+      await txn3.send().wait();
+
+      const num3 = zkAppInstance.num.get();
+      console.log('Add 2:', num3.toString());
+
+      // ----------------------------------------------------
+
+      console.log('Closing the local blockchain');
+      await shutdown();
+
+    })();
+
+    ```
+    The first step is to import the smart contract to the script/frontend you want to call it from. It's basically a JS package that runs on the client-side, which then makes a call to send the transaction (with the zk-proof) to the blockchain.
+
+    *To use your zkApp on production, you need to publish your file to npm. You can find the steps [here](https://docs.minaprotocol.com/zkapps/how-to-write-a-zkapp-ui#publish-to-npm-for-production).*
+
+6. Run the commands below to compile and run the zkApp:
+    ```
+    npm run build
+    node build/src/main.js
+    ```
+
+    If all goes well, you should be able to see the results on the terminal.
+
+  ![zk-app-run.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1668237498559/6nJxlC7yU.png align="left")
+
+### Testing
+
+The JavaScript Testing Framework, [Jest](https://jestjs.io/), is included in the Mina zkApp CLI.
+
+- You can find the test file for the starter project in: Add.test.ts
+- Run tests with: ```npm run test``` or ```npm run testw``` (for watch mode)
+- Run ```npm run coverage``` to generate a coverage report which shows which % of your code is covered with the tests. For example, here's how the [coverage folder](https://github.com/edakturk14/zk-tutorial/tree/main/zk-app/coverage) is for our sample project.
+- You can run your tests locally [here's](https://docs.minaprotocol.com/zkapps/how-to-test-a-zkapp#creating-a-local-blockchain) more details on creating a local blockchain
+
+*Please note: Jest comes with the project, and you can use another test framework if you'd like to.*
+
+---
+
+# My experience & ideas
+
+- Creating zkApps are A LOT easier than it sounds.
+- Privacy-preserving applications can open the door for many new and exciting use cases, and I'm excited to see how ZKPs & Mina Protocol can unlock them.
+- A lot of the docs on the Mina Protocol website are being worked on at the moment. Finding the latest information and educational material can take time and effort. There are only a few educators or starter kits in the ecosystem, and I was mainly going to Discord for support. This also presents an opportunity for those that are looking to get involved.
+- Scalability is an important issue with the Mina Blockchain; transactions are very slow. Hold on; the test tokens will come. Currently, this is an issue that's being worked on by the team. You can read more [here](https://forums.minaprotocol.com/t/info-ways-plans-to-achieve-higher-throughput-on-mina/5368).
+
+---
+
+Zero-knowledge is an expanding field with many innovative teams working on different solutions in the blockchain ecosystem. I've learned a lot about zero-knowledge technology over the past few months and got lots more learning to do.
+
+I'll be continuing to write about other technologies and tools that I find interesting. If you have any questions or comments, please drop them below. Catch you at the next one!
