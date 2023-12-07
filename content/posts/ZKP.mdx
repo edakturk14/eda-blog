@@ -1,0 +1,131 @@
+---
+title: Zero-Knowledge Proofs in Plain English
+description: Beginner's guide to ZKPs - What they are & why you should pay attention
+date: 2023-12-04
+---
+
+<Image src="/zkp-banner.png" width="718" height="404" alt="Banner"/>
+
+*Originally published on [Mirror](https://mirror.xyz/edatweets.eth/oKKkqrfaeyxOZoPpggC9VUUCZYW3z8QfWPu9u5T5m50)*
+
+## TL;DR;
+
+- Zero-knowledge proofs (ZKPs) can cryptographically prove a statement is true without revealing the statement itself. They offer a new level of privacy in digital transactions, allowing for verification without compromising sensitive data.
+- Zk-SNARKs, which stand for Succinct Non-interactive Arguments of Knowledge, are a type of ZKPs. ‘ Succinct’ and ‘Non-interactive’ highlight their efficient performance, while ‘Zero-knowledge’ refers to their privacy-enhancing feature. They are becoming increasingly important in the blockchain world, significantly improving both scalability & privacy.
+
+---
+
+Zero-knowledge proofs (ZKPs) have become a buzzword in the web3/crypto space, often surrounded by a buzz of excitement and sometimes confusion. As blockchain technology evolves and the applications built on it grow more complex, ZKPs are increasingly crucial for two primary reasons: privacy and scalability.
+
+Despite the growing importance of ZKPs, much of the existing information about them tends to be quite technical. This is my stab to change that. My goal is to give you a clear and straightforward guide to ZKPs for the blockchain world.
+
+In this post, I’ll cover:
+
+- What are ZKPs & zkSNARKs?
+- How do they work?
+- Why you should pay attention?
+
+
+## What is Privacy if Not an Illusion in Public Blockchains?
+Blockchains like Bitcoin and Ethereum are public ledgers. Every transaction is recorded and visible to anyone who accesses the blockchain. This transparency is great for ensuring honesty and security but not so much for privacy. Think about this: your bank account was available for everyone to see…
+
+It’s important to note that the information shared on these blockchains is linked to public keys, not your actual government-issued identity. This means all actions are pseudonymous rather than anonymous.
+
+While using public keys or wallet addresses does provide a degree of anonymity, this does NOT equate to privacy. Your transactions, although not directly linked to your real-world identity, are still fully visible on the public ledger. This transparency has led to numerous instances where digital identities were traced back to real individuals.
+
+Therefore, there’s surely a need for a more robust privacy solution in such an open network, and there have been various approaches Zero-knowledge proofs (ZKPs) are one of these. In a world where every transaction is a matter of public record, ZKPs offer a way to maintain privacy while still verifying the authenticity of transactions.
+
+## What is a Zero-Knowledge Proof (ZKP)?
+In cryptography, zero-knowledge protocol or zero-knowledge proof (ZKP) is a method that enables someone (the ‘Prover’) to convince another party (the ‘Verifier’) that they know a secret or a fact without revealing what that secret is. Simply put, the Prover demonstrates they have certain knowledge, and the Verifier checks this claim without disclosing the actual information.
+
+You can create zero-knowledge proofs for facts such as:
+
+- Knowledge of a private key belonging to a wallet without disclosing the private key
+- Proof that you made a donation without sharing how much it is
+- Knowing where Waldo is without sharing the exact location
+
+In these examples, the Prover can maintain privacy while still sharing proof of a specific knowledge. This concept might sound abstract, so we’ll break it down as we go along.
+
+## But first — why should you care?
+
+### Privacy
+- ZKPs are crucial because they offer a new level of privacy in digital transactions. They let you share just enough information to get the job done without revealing anything extra. This is particularly important in the context of public blockchains, where traditionally, every transaction detail is visible. With ZKPs, you can prove the validity of a transaction, like a fund transfer, while keeping the amounts and involved parties private.
+
+### Scalability
+- Secondly, ZKPs contribute to scalability in many applications. By using a ZKP, one party can confirm that a complex computation or transaction was carried out correctly without requiring others to repeat the same work. This approach reduces the computational load on the network. In other words, there is no need for re-execution — only the proof needs to be verified. (Ideally, verifying a ZKP requires significantly fewer resources than re-executing the computation.)
+
+##  Zero-Knowledge Proofs: Breaking it Down
+
+Let’s talk about the key concepts of ZKPs through an example scenario.
+
+Say that Alice needs to prove ownership of a digital wallet to Bob without revealing her private key. (PS: never give your private key; it has full control over your account. This means whoever has the private key will also have complete control over your account.)
+
+- The Prover (Alice): Alice wants to demonstrate that she owns the digital wallet without sharing her private key.
+- The Verifier (Bob): Bob wants proof of Alice’s claim.
+- The Witness (Statement Being Proven): The ‘witness’ refers to the specific statement or fact being proven. Here, it is the claim that Alice is the owner of the wallet.
+- The Proof: Alice provides a proof that validates her wallet ownership without sharing her private key. This proof is a result of cryptographic computations demonstrating that Alice possesses the key without actually showing it.
+
+In this example, Alice effectively uses cryptographic methods to generate a zero-knowledge proof. Bob, on the receiving end, can verify this proof without ever needing to see or know the private key itself.
+
+## What makes a “Zero-Knowledge Proof”?
+Now that we know Alice can prove her ownership of a wallet to Bob without revealing her private key, let’s look at the fundamental properties that define a ZKP.
+
+A ZKP must satisfy 3 properties:
+
+- Completeness — if the statement is true then a prover can convince a verifier. If Alice truly owns the wallet, she can produce a proof that convinces Bob of her ownership. Completeness ensures that if the claim is true (Alice does own the wallet), and both Alice and Bob follow the protocol correctly, then Bob will be convinced by the end of the process.
+- Soundness — a cheating prover can not convince a verifier of a false statement. This assures that if Alice does not actually own the wallet, she cannot trick Bob into believing she does. Soundness means that a dishonest prover (Alice) can’t falsely convince an honest verifier (Bob) into believing a false claim.
+- Zero-knowledge — no additional information beyond the truth of the statement is revealed. While Alice proves her ownership of the wallet, she shows nothing else to Bob — particularly, her private key remains secret. Zero-knowledge means that Bob learns only that Alice owns the wallet and nothing more.
+
+## Zero-knowledge proofs in the Blockchain Space
+
+Zero-knowledge proofs have a variety of use cases in blockchains today. Here are some some examples:
+
+- L2 Rollups for scaling blockchains: These are used to offload some of the computational work from the main blockchain layer (L1). By handling state transitions off-chain, they reduce the processing burden on L1, which functions more as a verifier with limited computational capacity. — Eg: Starknet, Matter Labs, Scroll, Polygon
+- Bridges: These facilitate transactions between different blockchains. By using zero-knowledge proofs, a bridge can, for example, verify that funds have been locked on one blockchain before allowing corresponding actions on another. — Eg: Succint.
+- Privacy-focused cryptocurrencies: Enables transactions on the blockchain while keeping certain transaction details private. — Eg: Zcash, TornadoCash, Worldcoin,
+- Gaming: Blockchain strategy game — ‘Dark Forest’ (more on this below)
+- Lightweight Blockchains: Mina Protocol, is a blockchain that uses zero-knowledge proofs to maintain a small blockchain size.
+
+📍 If you’ve made it this far, you probably think that ZKPs are among the most fascinating parts of cryptography, and I’m with you on that. Now we’re getting to specifics: zk-SNARKs.
+
+## What about these zk-SNARKs?
+
+One particular type of Zero-Knowledge Proof that has significantly impacted the crypto world since its introduction in 2011 is zk-SNARKs
+
+Zk-SNARKs let someone prove they know a secret without disclosing what that secret is. They’re important in the context of blockchains because zk-SNARKs make transactions faster to verify and keep them private without revealing sensitive transaction details.
+
+But what exactly are zk-SNARKs? The term ‘SNARK’ stands for ‘Succinct Non-interactive ARguments of Knowledge.’ Let’s break it down:
+
+- S — Succinct: This means the proofs are short and can be checked quickly. (A word I have googled many many times)
+- N — Non-interactive: There’s no need for back-and-forth communication between the prover and verifier, streamlining the verification process. Unlike some proof systems where the verifier might need to interact with the prover, non-interactive proofs eliminate this need. If proofs were interactive, it would mean that clients would have to engage in a lot of communication with the verifier to confirm that a statement or transaction is true.
+- AR — Argument of Knowledge: ‘Argument’ is a technical term implying a slightly weaker form of ‘proof’. It means the proof holds as long as the prover doesn’t have unlimited computing power.
+- K — Knowledge: The prover can demonstrate they know a secret or information through a cryptographic process.
+
+A SNARK by itself doesn’t have to be zero-knowledge. The ZK part adds the extra feature that the proof can keep some information hidden.
+
+It’s interesting to note that zk-SNARKs weren’t initially developed for blockchains or speeding up transactions. The original idea was about doing calculations on big data sets without downloading them. However, in recent years, we’ve seen significant experimentation and adoption of zk-SNARKs within the blockchain space.
+
+🫡 Highly recommended presentation on ZK by Justin Thaler, covering these topics and diving into more technical aspects.
+
+## zkSNARKs in Action: Dark Forest 🌳
+
+Let’s make things more concrete with an actual example.
+
+Dark Forest, an innovative strategy game built on Ethereum that uses zkSNARKs. It’s an ‘incomplete information game,’ similar to poker, where players strategize without full knowledge of their opponent’s positions.
+
+In the game, players are in a universe where they can’t directly see where everyone and everything is. This is known as the “fog of war.” Players don’t show where they are. Instead, they use a secret code to represent their location. This code says, “I’m at a secret place”, without telling exactly where.
+
+This is where zkSNARKs come into play:
+
+zkSNARKs are used to verify players’ movements and locations in the game. They allow players to prove they are in a certain location without revealing their exact coordinates.
+
+Every time a player moves, they must use zkSNARKs to prove their move is valid.
+
+The use of zkSNARKs in ‘Dark Forest’ is crucial. Without them, players could cheat by pretending to be somewhere they’re not. But since the players are required to submit zkSNARKs, they are kept from lying. You can see that by incorporating zkSNARKs, Dark Forest guarantees fair play.
+
+## The end
+The potential of Zero-Knowledge Proofs is what makes them super exciting. In the future, we might see ZKPs becoming as common and essential as today’s encryption methods. Think about how encryption is key to online shopping — it started as something complex, but now, we use it all the time without even thinking about it. Similarly, ZKPs are currently complex pieces of cryptography, but they’re likely to become simpler and part of our daily lives.
+
+Hope that this introduction triggers your interest and gives you some basics. This post is just the beginning & I’ll be writing more on ZK, specifically focusing on how developers can leverage this tech.
+
+If you have any questions or comments reach out to me on Twitter! See you on the next one! 👋
