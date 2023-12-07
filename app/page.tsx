@@ -4,23 +4,29 @@ import Link from "next/link"
 export default function Home() {
   // Sort posts by date, newest first
   const sortedPosts = allPosts.sort((a, b) => {
-    // Convert dates to timestamps for comparison
     const dateA = new Date(a.date).getTime();
     const dateB = new Date(b.date).getTime();
-
     return dateB - dateA; // For descending order (newest first)
   });
 
+  // Function to format the date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
+  };
+
   return (
-    <div className="prose dark:prose-invert">
-      {sortedPosts.map((post) => (
-        <article key={post._id}>
-          <Link href={post.slug}>
-            <h2>{post.title}</h2>
-          </Link>
-          {post.description && <p>{post.description}</p>}
-        </article>
-      ))}
+    <div className="prose">
+      <h2 style={{ marginTop: '30px' }}>Selected Posts</h2>
+      <ul>
+        {sortedPosts.map((post) => (
+          <li key={post._id}>
+            <Link href={post.slug}>
+              {post.title}, 
+            </Link> {formatDate(post.date)}
+          </li>
+        ))}
+      </ul>
     </div>
-  )
+  );
 }
