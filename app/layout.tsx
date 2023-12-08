@@ -23,8 +23,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="max-w-2xl mx-auto py-10 px-4">
-            <h1 className="text-4xl font-bold mb-2 text-pink-600">Eda Akturk</h1>
-            <p className="mb-2"> 
+            <h1 className="text-4xl font-bold text-pink-600">Eda Akturk</h1>
+            <h2 className="mb-2 text-pink-500">Developer & Educator</h2>
+            <p> 
               <a href="https://twitter.com/edatweets_" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700"> Twitter</a>, 
               <a href="https://github.com/edakturk14" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700"> GitHub</a>, 
               <a href="https://www.linkedin.com/in/eda-akturk-a9624b105/" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700"> Linkedin</a>,           
